@@ -15,6 +15,7 @@
 [2025-01-01 01:01:35] [INFO    ] root: Finished running
 [2025-01-01 01:01:35] [DEBUG   ] root: Loading resource: "data.json"
 [2025-01-01 01:01:35] [INFO    ] root: Loaded resource: "data.json"
+[2025-01-01 01:01:35] [INFO    ] root: Got data: {'string key': 'some value string', 'list of values': ['a', 'b', 'c', 'etc.'], 'numbers too': [1, 2, 3, 4]}
 [2025-01-01 01:01:35] [DEBUG   ] urllib3.connectionpool: Starting new HTTPS connection (1): example.com:443
 [2025-01-01 01:01:35] [DEBUG   ] urllib3.connectionpool: https://example.com:443 "GET / HTTP/1.1" 200 648
 [2025-01-01 01:01:35] [INFO    ] root: Status Code 200 from URL: "https://example.com/"
