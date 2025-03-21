@@ -1,0 +1,15 @@
+{
+    "string key": "some value string",
+    "list of values": [
+        "a",
+        "b",
+        "c",
+        "etc."
+    ],
+    "numbers too": [
+        1,
+        2,
+        3,
+        4
+    ]
+}

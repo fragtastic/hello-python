@@ -1,0 +1,70 @@
+# https://taskfile.dev
+
+version: '3'
+
+env:
+  IMAGE_NAME: hello-python
+  TIMESTAMP:
+    sh: date +"%Y%m%d%H%M%S"
+  COMMIT_SHA:
+    sh: git rev-parse HEAD
+  BUILD_PLATFORMS: linux/amd64,linux/arm64
+
+dotenv: ['.env']
+
+tasks:
+  run:
+    cmds:
+      - cd src/ && python main.py
+    silent: true
+  docker:run:
+    cmds:
+      - docker run --rm --env-file=.env $IMAGE_NAME:latest --example-argument="some other value argument"
+  docker:exec:
+    cmds:
+      - docker run --rm -it --env-file=.env $IMAGE_NAME:latest /bin/sh
+  docker:buildx:init:
+    desc: Create a buildx builder if it doesn't exist
+    cmds:
+      - |
+        if ! docker buildx inspect multiarch-builder > /dev/null 2>&1; then
+          docker buildx create --name multiarch-builder --use
+        else
+          docker buildx use multiarch-builder
+        fi
+  docker:buildx:build:
+    desc: Build multi-arch image using Docker
+    deps: [docker:buildx:init]
+    cmds:
+      - |
+        docker buildx build \
+          --platform $BUILD_PLATFORMS \
+          --build-arg COMMIT_SHA=$COMMIT_SHA \
+          --file Containerfile \
+          --tag $IMAGE_NAME:latest \
+          --tag $IMAGE_NAME:$TIMESTAMP .
+  podman:run:
+    cmds:
+      - podman run --rm --env-file=.env $IMAGE_NAME:latest --example-argument="some other value argument"
+  podman:exec:
+    cmds:
+      - podman run --rm -it --env-file=.env $IMAGE_NAME:latest /bin/sh
+  podman:build:
+    desc: Build image using Podman
+    cmds:
+      - |
+        podman build \
+          --build-arg COMMIT_SHA=$COMMIT_SHA \
+          --file Containerfile \
+          --tag $IMAGE_NAME:latest \
+          --tag $IMAGE_NAME:$TIMESTAMP .
+  podman:buildx:build:
+    desc: Build multi-arch image using Podman
+    cmds:
+      - |
+        podman buildx build \
+          --platform $BUILD_PLATFORMS \
+          --build-arg COMMIT_SHA=$COMMIT_SHA \
+          --file Containerfile \
+          --tag $IMAGE_NAME:latest \
+          --tag $IMAGE_NAME:$TIMESTAMP .
