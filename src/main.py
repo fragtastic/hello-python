@@ -51,7 +51,8 @@ class MyClient(object):
 
         self.long_running_task()
 
-        self.load_resource('data.json')
+        data = self.load_resource('data.json')
+        logging.info(f'Got data: {data}')
 
         self.fetch_content(os.environ.get('REMOTE_EXAMPLE', None))
         
@@ -76,7 +77,7 @@ class MyClient(object):
             sleep(1)
         logger.info('Finished running')
     
-    def load_resource(self, fileName: str) -> None:
+    def load_resource(self, fileName: str) -> dict[any, any]:
         logger.debug(f'Loading resource: "{fileName}"')
         filePath = os.path.join('/app/resources', fileName)
         with open(filePath, 'r') as fileHandle:
